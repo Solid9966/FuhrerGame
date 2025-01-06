@@ -9,10 +9,12 @@
       <excludeFolder url="file://$MODULE_DIR$/frontend/FuherGame/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/FuherGame/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/FuherGame/build" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/fuhrer_game/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/fuhrer_game/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/fuhrer_game/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />
-    <orderEntry type="library" name="Dart Packages" level="project" />
   </component>
 </module>
