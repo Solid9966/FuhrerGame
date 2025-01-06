@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7dd0d3a3-f075-425a-8d37-424f9cf66ba5)
+![로고0 2](https://github.com/user-attachments/assets/3aedc799-738f-40af-8543-cb59ea04a68a)
 
 
 # FuhrerGame
@@ -25,11 +25,11 @@ Thank you, and enjoy!
 ## 게임 프로세스 | Game Process
 
 ## 팀 소개 | Introduction of team members
-| 이름   | 이메일                 |         
-| ------ | ---------------------- | 
-| 박성원 | tjddnjs612@gmail.com   | 
-| 한승윤 | miten267@gmail.com     | 
-| 김재현 | dkk2617@kookmin.ac.kr  | 
+| 직무 | 이름   | 이메일                 |         
+| ------ | ------ | ---------------------- | 
+| PM & Full-Stack | 박성원 | tjddnjs612@gmail.com   | 
+| Full-Stack | 한승윤 | miten267@gmail.com     | 
+| Full-Stack | 김재현 | dkk2617@kookmin.ac.kr  | 
 
 ##  실행 방법 | Execution method
 
