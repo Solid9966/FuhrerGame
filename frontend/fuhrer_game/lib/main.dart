@@ -1,4 +1,7 @@
+// main.dart
 import 'package:flutter/material.dart';
+import 'lobby.dart';
+import 'GameRoom.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,8 +27,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController roomCodeController = TextEditingController();
+  bool isJoinWithCode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,30 +59,8 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              const Text(
-                'JOIN A GAME',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              const SizedBox(height: 20),
               TextField(
-                decoration: InputDecoration(
-                  hintText: 'Lobby',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  filled: true,
-                  fillColor: Colors.grey[800],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
+                controller: nameController,
                 decoration: InputDecoration(
                   hintText: 'Your Name',
                   hintStyle: TextStyle(color: Colors.grey[400]),
@@ -84,46 +74,76 @@ class MyHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GameRoomPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown[400],
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                child: const Text('JOIN'),
+                child: const Text('Create Lobby'),
               ),
               const SizedBox(height: 40),
-              const Text(
-                'CREATE A LOBBY',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: isJoinWithCode,
+                    onChanged: (value) {
+                      setState(() {
+                        isJoinWithCode = value ?? false;
+                      });
+                    },
+                  ),
+                  const Text(
+                    'Join with Room Code',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Your Name',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  filled: true,
-                  fillColor: Colors.grey[800],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
+              if (isJoinWithCode)
+                TextField(
+                  controller: roomCodeController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Room Code',
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: Colors.grey[800],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (isJoinWithCode && roomCodeController.text.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const GameRoomPage()),
+                    );
+                  } else if (!isJoinWithCode) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LobbyPage()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter a valid Room Code')),
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown[400],
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                child: const Text('CREATE LOBBY'),
+                child: const Text('Join Lobby'),
               ),
             ],
           ),
