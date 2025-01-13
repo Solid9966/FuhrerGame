@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -34,6 +35,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Boot WebSocket (WebSocket 및 STOMP 메시징)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // Jackson (JSON 직렬화 및 역직렬화)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    // Spring Messaging (WebSocket 메시지 처리)
+    implementation 'org.springframework:spring-messaging'
+    // Spring Boot Test (테스트 관련)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
