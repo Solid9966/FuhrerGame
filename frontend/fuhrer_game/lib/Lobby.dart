@@ -1,5 +1,6 @@
 // lobby.dart
 import 'package:flutter/material.dart';
+import 'GameRoom.dart';
 
 class LobbyPage extends StatelessWidget {
   const LobbyPage({super.key});
@@ -22,6 +23,12 @@ class LobbyPage extends StatelessWidget {
             ),
             onTap: () {
               // 나중에 채팅방 화면으로 이동하도록 추가 가능
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GameRoomPage(roomName: 'Lobby ${index + 1}'),
+                ),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Lobby ${index + 1} selected')),
               );
