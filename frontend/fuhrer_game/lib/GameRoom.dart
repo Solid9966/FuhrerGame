@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 class GameRoomPage extends StatefulWidget {
-  const GameRoomPage({super.key});
+  final String roomName;
+
+  const GameRoomPage({super.key, required this.roomName});
 
   @override
   _GameRoomPageState createState() => _GameRoomPageState();
@@ -26,7 +28,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
-        title: const Text('Game Room'),
+        title: Text(widget.roomName),
         backgroundColor: Colors.brown[400],
       ),
       body: Column(
