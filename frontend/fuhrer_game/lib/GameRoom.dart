@@ -13,18 +13,27 @@ class GameRoomPage extends StatefulWidget {
 
 class _GameRoomPageState extends State<GameRoomPage> {
   final TextEditingController _messageController = TextEditingController();
-  final List<String> _messages = [];
-  final WebSocketService _webSocketService = WebSocketService();
+  late WebSocketService _webSocketService; // WebSocketService 필드 정의
+  final List<Map<String, dynamic>> _messages = []; // 메시지 리스트
+
 
   @override
   void initState() {
     super.initState();
-    _webSocketService.connect((message) {
+    _webSocketService = WebSocketService();
+    _webSocketService.connect((messageData) {
       setState(() {
-        _messages.insert(0, message); // 새 메시지를 리스트에 추가
+        // JSON 데이터만 추가
+        if (messageData is Map<String, dynamic>) {
+          _messages.add(messageData);
+          print('_messages: $_messages'); // 추가된 메시지 확인
+        } else {
+          print('Invalid message format: $messageData');
+        }
       });
     });
   }
+
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
@@ -49,27 +58,35 @@ class _GameRoomPageState extends State<GameRoomPage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _messages.length,
-              reverse: true,
+              itemCount: _messages.length, // 전체 메시지 개수
+              reverse: true, // 최신 메시지가 아래에 표시되도록
               itemBuilder: (context, index) {
+                // 메시지를 Map<String, dynamic> 타입으로 캐스팅
+                final Map<String, dynamic> message = _messages[_messages.length - 1 - index];
+
                 return Align(
-                  alignment: Alignment.centerRight,
+                  alignment: message['username'] == "User1"
+                      ? Alignment.centerRight // 본인의 메시지는 오른쪽
+                      : Alignment.centerLeft, // 다른 사용자의 메시지는 왼쪽
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.brown[400],
+                      color: message['username'] == "User1"
+                          ? Colors.brown[400] // 본인의 메시지는 브라운 색상
+                          : Colors.grey[700], // 다른 사용자의 메시지는 회색
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      _messages[_messages.length - 1 - index],
-                      style: const TextStyle(color: Colors.white),
+                      "${message['username'] ?? 'Unknown'}: ${message['content'] ?? 'No content'}",
+                      style: const TextStyle(color: Colors.white), // 텍스트 색상은 흰색
                     ),
                   ),
                 );
               },
             ),
           ),
+
           const Divider(height: 1, color: Colors.grey),
           Padding(
             padding: const EdgeInsets.all(8.0),

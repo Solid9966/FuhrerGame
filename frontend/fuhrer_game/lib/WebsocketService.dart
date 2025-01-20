@@ -8,7 +8,7 @@ class WebSocketService {
   final String webSocketUrl = 'ws://192.168.0.2:8080/ws';
   late StompClient stompClient;
 
-  void connect(Function onMessageReceived) {
+  void connect(Function(Map<String, dynamic>) onMessageReceived) {
     stompClient = StompClient(
       config: StompConfig( //클라이언트 설정 지정
         url: webSocketUrl,
@@ -18,8 +18,13 @@ class WebSocketService {
             destination: '/topic/messages',
             callback: (StompFrame frame) {
               if (frame.body != null) {
-                final Map<String, dynamic> messageData = json.decode(frame.body!);
-                onMessageReceived(frame.body!); // 수정된 메시지 callback으로 전달
+                try {
+                  final Map<String, dynamic> messageData = json.decode(frame.body!);
+                  print('Received message: $messageData'); // 수신된 메시지 확인
+                  onMessageReceived(messageData); // 파싱된 데이터를 콜백으로 전달
+                } catch (error) {
+                  print('Error parsing message: $error');
+                }
               }
             },
           );
@@ -41,9 +46,13 @@ class WebSocketService {
     if (stompClient.connected) { // WebSockt 연결이 유지 된다면,
       stompClient.send( // 메시지 전송
         destination: '/app/chat',
-        body: '{"username": "$username", "content": "$content", "timestamp": "${DateTime.now().toIso8601String()}"}',
-    );
-      print('Message sent: $content'); // 메시지 전송 로그 추가
+        body: json.encode({
+          "username": username,
+          "content": content,
+          "timestamp": DateTime.now().toIso8601String(),
+        }),
+      );
+      // print('Message sent: $content'); // 메시지 전송 로그 추가
     } else {
       print('Cannot send message. WebSocket is not connected.');
     }
