@@ -178,8 +178,8 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => GameRoomPage(
-                                roomName: 'Test',
-                                roomCode: '12345667',
+                                roomName: '${widget.roomName}',
+                                roomCode: '${widget.roomCode}',
                                 ),
                           ),
                         );
