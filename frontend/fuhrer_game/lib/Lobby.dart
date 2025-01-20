@@ -1,6 +1,6 @@
 // lobby.dart
 import 'package:flutter/material.dart';
-import 'GameRoom.dart';
+import 'ReadyRoom.dart';
 
 class LobbyPage extends StatelessWidget {
   const LobbyPage({super.key});
@@ -26,7 +26,7 @@ class LobbyPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => GameRoomPage(roomName: 'Lobby ${index + 1}'),
+                  builder: (context) => ReadyRoomPage(roomName: 'Lobby ${index + 1}'),
                 ),
               );
               ScaffoldMessenger.of(context).showSnackBar(
