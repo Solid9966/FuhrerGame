@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'GameRoom.dart';
+import 'Lobby.dart';
 
 class ReadyRoomPage extends StatefulWidget {
   final String roomName;
+  final String roomCode;
+  final VoidCallback onLeave;
 
-  const ReadyRoomPage({super.key, required this.roomName});
+  const ReadyRoomPage({super.key, required this.roomName,required this.roomCode,required this.onLeave});
 
   @override
   _ReadyRoomPageState createState() => _ReadyRoomPageState();
@@ -123,8 +126,12 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; //화면의 크기를 변수로 가져오자
-
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          widget.onLeave();
+          return true;
+        },
+    child: Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
         title: Text(widget.roomName),
@@ -170,7 +177,10 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GameRoomPage(roomName: 'Test',),
+                            builder: (context) => GameRoomPage(
+                                roomName: 'Test',
+                                roomCode: '12345667',
+                                ),
                           ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -301,6 +311,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
           ),
         ],
       ),
+    ),
     );
   }
 }
