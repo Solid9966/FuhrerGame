@@ -100,7 +100,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
                 final Map<String, dynamic> message = _messages[_messages.length - 1 - index];
 
                 return Align(
-                  alignment: message['username'] == "User1"
+                  alignment: message['username'] == username
                       ? Alignment.centerRight // 본인의 메시지는 오른쪽
                       : Alignment.centerLeft, // 다른 사용자의 메시지는 왼쪽
                   child: Container(
