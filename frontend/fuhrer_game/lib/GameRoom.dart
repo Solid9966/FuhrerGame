@@ -1,5 +1,6 @@
 // game_room.dart
 import 'package:flutter/material.dart';
+import 'WebsocketService.dart';
 
 class GameRoomPage extends StatefulWidget {
   final String roomName;
@@ -13,15 +14,28 @@ class GameRoomPage extends StatefulWidget {
 class _GameRoomPageState extends State<GameRoomPage> {
   final TextEditingController _messageController = TextEditingController();
   final List<String> _messages = [];
+  final WebSocketService _webSocketService = WebSocketService();
+
+  @override
+  void initState() {
+    super.initState();
+    _webSocketService.connect((message) {
+      setState(() {
+        _messages.insert(0, message); // 새 메시지를 리스트에 추가
+      });
+    });
+  }
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      setState(() {
-        _messages.add(_messageController.text);
-        _messageController.clear();
-      });
+      final username = "User1"; // 사용자 이름 설정
+      final content = _messageController.text;
+
+      _webSocketService.sendMessage(username, content); // 메시지 전송
+      _messageController.clear();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

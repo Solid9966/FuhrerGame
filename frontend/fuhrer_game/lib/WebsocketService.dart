@@ -1,6 +1,7 @@
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
+import 'dart:convert'; // JSON 파싱
 
 class WebSocketService {
   // //192.168.0.2 이부분은 현재 에뮬레이터 사용으로, 개인 컴퓨터 IP 다른 환경 실행시, 따로 지정해줘야함
@@ -17,7 +18,8 @@ class WebSocketService {
             destination: '/topic/messages',
             callback: (StompFrame frame) {
               if (frame.body != null) {
-                onMessageReceived(frame.body!);
+                final Map<String, dynamic> messageData = json.decode(frame.body!);
+                onMessageReceived(frame.body!); // 수정된 메시지 callback으로 전달
               }
             },
           );
@@ -35,12 +37,13 @@ class WebSocketService {
     stompClient.activate(); // WebSocket 연결 활성화, STOMP 메시지 브로커 통신 시작
   }
 
-  void sendMessage(String content) {
+  void sendMessage(String username,String content) {
     if (stompClient.connected) { // WebSockt 연결이 유지 된다면,
       stompClient.send( // 메시지 전송
         destination: '/app/chat',
-        body: '{"message": "$content"}', // JSON 형식으로 메시지 전송
-      );
+        body: '{"username": "$username", "content": "$content", "timestamp": "${DateTime.now().toIso8601String()}"}',
+    );
+      print('Message sent: $content'); // 메시지 전송 로그 추가
     } else {
       print('Cannot send message. WebSocket is not connected.');
     }
