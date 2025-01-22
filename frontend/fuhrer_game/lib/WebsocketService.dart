@@ -5,7 +5,7 @@ import 'dart:convert'; // JSON 파싱
 
 class WebSocketService {
   // //192.168.0.2 이부분은 현재 에뮬레이터 사용으로, 개인 컴퓨터 IP 다른 환경 실행시, 따로 지정해줘야함
-  final String webSocketUrl = 'ws://192.168.0.2:8080/ws';
+  final String webSocketUrl = 'ws://43.201.106.86:8080/ws';
   late StompClient stompClient;
 
   void connect(Function(Map<String, dynamic>) onMessageReceived) {
