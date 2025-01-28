@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'GameRoom.dart';
+import 'WebsocketService.dart';
 import 'Lobby.dart';
 
 class ReadyRoomPage extends StatefulWidget {
@@ -15,7 +16,9 @@ class ReadyRoomPage extends StatefulWidget {
 
 class _ReadyRoomPageState extends State<ReadyRoomPage> {
   final TextEditingController _messageController = TextEditingController();
-  final List<String> _messages = [];
+  final List<Map<String, dynamic>> _messages = []; // 메시지 리스트
+  late WebSocketService _webSocketService; // WebSocketService 필드 정의
+  late String username; // 사용자 이름
   final List<String> _participants = [
     "Alice",
     "Bob",
@@ -27,11 +30,55 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
   @override
   void initState() {
     super.initState();
+    username = '';
 
     // 다이얼로그를 화면 로딩 후에 표시
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showUsernameDialog();
       _showAvatarSelectionDialog();
     });
+    _webSocketService = WebSocketService();
+    _webSocketService.connect((messageData) {
+      setState(() {
+        // JSON 데이터만 추가
+        if (messageData is Map<String, dynamic>) {
+          _messages.add(messageData);
+          print('_messages: $_messages'); // 추가된 메시지 확인
+        } else {
+          print('Invalid message format: $messageData');
+        }
+      });
+    });
+  }
+
+  void _showUsernameDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // 다이얼로그 외부를 눌러 닫을 수 없음
+      builder: (BuildContext context) {
+        final TextEditingController usernameController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Enter your username'),
+          content: TextField(
+            controller: usernameController,
+            decoration: const InputDecoration(hintText: 'Your username'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                if (usernameController.text.isNotEmpty) {
+                  setState(() {
+                    username = usernameController.text;
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showAvatarSelectionDialog() {
@@ -116,10 +163,11 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      setState(() {
-        _messages.add(_messageController.text);
-        _messageController.clear();
-      });
+      // final username = "User1"; // 사용자 이름 수동 설정 방법
+      final content = _messageController.text;
+
+      _webSocketService.sendMessage(username, content); // 메시지 전송
+      _messageController.clear();
     }
   }
 
@@ -258,21 +306,32 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
           // 채팅 메시지 섹션
           Expanded(
             child: ListView.builder(
-              itemCount: _messages.length,
-              reverse: true,
+              itemCount: _messages.length, // 전체 메시지 개수
+              reverse: true, // 최신 메시지가 아래에 표시되도록
               itemBuilder: (context, index) {
+                // 메시지를 Map<String, dynamic> 타입으로 캐스팅
+                final Map<String, dynamic> message = _messages[_messages
+                    .length - 1 - index];
+
                 return Align(
-                  alignment: Alignment.centerRight,
+                  alignment: message['username'] == username
+                      ? Alignment.centerRight // 본인의 메시지는 오른쪽
+                      : Alignment.centerLeft, // 다른 사용자의 메시지는 왼쪽
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.brown[400],
+                      color: message['username'] == username
+                          ? Colors.brown[400] // 본인의 메시지는 브라운 색상
+                          : Colors.grey[700], // 다른 사용자의 메시지는 회색
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      _messages[_messages.length - 1 - index],
-                      style: const TextStyle(color: Colors.white),
+                      "${message['username'] ??
+                          'Unknown'}: ${message['content'] ?? 'No content'}",
+                      style: const TextStyle(color: Colors
+                          .white), // 텍스트 색상은 흰색
                     ),
                   ),
                 );
