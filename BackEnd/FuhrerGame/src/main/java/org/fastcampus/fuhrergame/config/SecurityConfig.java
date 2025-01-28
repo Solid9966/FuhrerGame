@@ -13,10 +13,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .requestMatchers("/ws/**").permitAll() // WebSocket 경로는 인증 ㅇ벗이 허용
-                .anyRequest().authenticated(); // 나머지 모든 요청은 인증 필요
-                //.csrf().disable() //CSRF 보호 비활성화 (WebSocket 요청에서 문제 방지)
+                .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/ws/**", "/api/game/**").permitAll() // WebSocket 및 Game API 경로 허용,WebSocket 경로는 인증 없이 허용
+                .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
+        )
+                .csrf(csrf -> csrf.disable()); //CSRF 보호 비활성화 (WebSocket 요청에서 문제 방지)
 
             return http.build();
     }
