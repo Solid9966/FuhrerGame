@@ -228,6 +228,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                             builder: (context) => GameRoomPage(
                                 roomName: '${widget.roomName}',
                                 roomCode: '${widget.roomCode}',
+                                userName: '${username}',
                                 ),
                           ),
                         );
