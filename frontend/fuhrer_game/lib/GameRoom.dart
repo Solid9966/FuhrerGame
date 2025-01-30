@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'WebsocketService.dart';
 import 'ReadyRoom.dart';
+import 'ProgressChecker.dart';
 
 class GameRoomPage extends StatefulWidget {
   final String roomName;
@@ -19,6 +20,8 @@ class _GameRoomPageState extends State<GameRoomPage> {
   late WebSocketService _webSocketService; // WebSocketService 필드 정의
   final List<Map<String, dynamic>> _messages = []; // 메시지 리스트
   late String username; // 사용자 이름
+  int currentRound = 1; //현재 라운드 정보
+  int electionTracker = 2; // 현재 선거 트래커 상태
 
   @override
   void initState() {
@@ -63,6 +66,14 @@ class _GameRoomPageState extends State<GameRoomPage> {
         ),
         body: Column(
           children: [
+            Flexible(
+              flex: 2,
+              child: ProgressCheck(
+                currentRound: currentRound,
+                electionTracker: electionTracker,
+              ),
+            ),
+            const Divider(height: 1, color: Colors.grey),
             Expanded(
               child: ListView.builder(
                 itemCount: _messages.length, // 전체 메시지 개수
@@ -89,8 +100,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
                       child: Text(
                         "${message['username'] ??
                             'Unknown'}: ${message['content'] ?? 'No content'}",
-                        style: const TextStyle(color: Colors
-                            .white), // 텍스트 색상은 흰색
+                        style: const TextStyle(color: Colors.white), // 텍스트 색상은 흰색
                       ),
                     ),
                   );
