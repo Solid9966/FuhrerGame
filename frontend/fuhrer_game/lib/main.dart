@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (isJoinWithCode && roomCodeController.text.isNotEmpty) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => GameRoomPage(roomName: 'New Room', roomCode: '12345678',),),
+                      MaterialPageRoute(builder: (context) => GameRoomPage(roomName: 'New Room', roomCode: '12345678', userName: 'TEST',),),
     );
                   } else if (!isJoinWithCode) {
                     Navigator.push(
