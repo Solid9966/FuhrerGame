@@ -12,7 +12,7 @@ class LobbyPage extends StatefulWidget {
 }
 
 class _LobbyPageState extends State<LobbyPage> {
-  static final List<Map<String, dynamic>> rooms = []; //기능 구현을 위해 우선 static으로 선언하였음.
+  List<Map<String, dynamic>> rooms = []; //기능 구현을 위해 우선 static으로 선언하였음.
   final TextEditingController roomCodeController = TextEditingController();
 
   void _joinRoom(String roomCode) { //방에 입장.
@@ -31,6 +31,9 @@ class _LobbyPageState extends State<LobbyPage> {
                 onLeave:(){
                   setState(() {
                     rooms[roomIndex]['playerCount'] -= 1;
+                    if (rooms[roomIndex]['playerCount'] == 0) {
+                      rooms.removeAt(roomIndex);
+                    }
                   });
                 }
               ),
