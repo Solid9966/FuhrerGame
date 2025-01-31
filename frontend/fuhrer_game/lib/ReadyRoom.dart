@@ -174,11 +174,13 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; //화면의 크기를 변수로 가져오자
-    return WillPopScope(
-        onWillPop: () async {
-          widget.onLeave();
-          return true;
-        },
+    return PopScope(
+      canPop: true, // 뒤로 가기 허용
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          widget.onLeave(); // 뒤로 갈 때 인원 감소 실행
+        }
+      },
     child: Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
@@ -221,6 +223,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                     // 게임 시작 버튼
                     ElevatedButton(
                       onPressed: () {
+                        _webSocketService.sendParticipants(widget.roomCode, _participants);
                         // 게임 시작 로직 추가
                         Navigator.push(
                           context,
@@ -229,6 +232,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                                 roomName: '${widget.roomName}',
                                 roomCode: '${widget.roomCode}',
                                 userName: '${username}',
+                                participants: _participants,
                                 ),
                           ),
                         );

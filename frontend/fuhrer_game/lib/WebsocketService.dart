@@ -5,7 +5,7 @@ import 'dart:convert'; // JSON 파싱
 
 class WebSocketService {
   // EC2 Public IP 할당
-  final String webSocketUrl = 'ws://43.201.106.86:8080/ws';
+  final String webSocketUrl = 'ws://34.64.82.77:8080/ws';
   late StompClient stompClient;
 
   void connect(Function(Map<String, dynamic>) onMessageReceived) {
@@ -55,6 +55,22 @@ class WebSocketService {
       // print('Message sent: $content'); // 메시지 전송 로그 추가
     } else {
       print('Cannot send message. WebSocket is not connected.');
+    }
+  }
+
+  void sendParticipants(String roomCode, List<String> participants) {
+    if(stompClient.connected) {
+      stompClient.send(
+        destination: '/app/game/start',
+        body: json.encode({
+          "roomCode": roomCode,
+          "playerCount": participants.length,
+          "players": participants,
+        }),
+      );
+      print("Participants sent to server: $participants");
+    } else {
+      print('Cannot send participants. WebSocket is not connected.');
     }
   }
 }
