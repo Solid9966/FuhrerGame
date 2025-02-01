@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'WebsocketService.dart';
 import 'ReadyRoom.dart';
 import 'dart:math';
-import 'ProgressChecker.
+import 'ProgressChecker.dart';
 
 class GameRoomPage extends StatefulWidget {
   final String roomName;
-  final String roomCode;
+  final String roomCode; // 여기서 roomCode는 ReadyRoom과 다름
   final String userName;
   final List<String> participants;
 
@@ -31,7 +31,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
   Map<String, String> playerRoles = {}; //플레이어 역할.
   bool votingInProgress = false;
   Map<String, bool> votes = {};
-=======
+
   int currentRound = 1; //현재 라운드 정보
   int electionTracker = 2; // 현재 선거 트래커 상태
 
@@ -53,12 +53,14 @@ class _GameRoomPageState extends State<GameRoomPage> {
         // JSON 데이터만 추가
         if (messageData is Map<String, dynamic>) {
           _messages.add(messageData);
-          print('_messages: $_messages'); // 추가된 메시지 확인
+          print('New message added: $messageData'); // 추가된 메시지 확인
         } else {
           print('Invalid message format: $messageData');
         }
       });
-    });
+    },  widget.roomCode,
+      "gameroom", // Room 타입 지정 , GameRoom의 별도 RoomCode 사용
+    );
   }
 
   void _sendMessage() {
@@ -66,7 +68,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
       // final username = "User1"; // 사용자 이름 수동 설정 방법
       final content = _messageController.text;
 
-      _webSocketService.sendMessage(username, content); // 메시지 전송
+      _webSocketService.sendMessage("gameroom", widget.roomCode, username, content); // 메시지 전송
       _messageController.clear();
     }
   }
@@ -319,8 +321,7 @@ class _GameRoomPageState extends State<GameRoomPage> {
                 reverse: true, // 최신 메시지가 아래에 표시되도록
                 itemBuilder: (context, index) {
                   // 메시지를 Map<String, dynamic> 타입으로 캐스팅
-                  final Map<String, dynamic> message = _messages[_messages
-                      .length - 1 - index];
+                  final Map<String, dynamic> message = _messages[_messages.length - 1 - index];
 
                   return Align(
                     alignment: message['username'] == username

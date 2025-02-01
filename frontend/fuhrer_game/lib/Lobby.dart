@@ -24,10 +24,10 @@ class _LobbyPageState extends State<LobbyPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              ReadyRoomPage(
+          builder: (context) => ReadyRoomPage(
                 roomName: rooms[roomIndex]['roomName'],
-                roomCode: rooms[roomIndex]['roomCode'],
+                roomCode: roomCode, // ReadyRoom에서는 기존 RoomCode 사용
+                gameRoomCode: roomCode + "_game", // GameRoom에서는 별도 RoomCode 사용
                 onLeave:(){
                   setState(() {
                     rooms[roomIndex]['playerCount'] -= 1;

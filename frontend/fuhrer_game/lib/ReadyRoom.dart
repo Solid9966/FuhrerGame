@@ -6,9 +6,10 @@ import 'Lobby.dart';
 class ReadyRoomPage extends StatefulWidget {
   final String roomName;
   final String roomCode;
+  final String gameRoomCode; // GameRoom용 RoomCode 추가
   final VoidCallback onLeave;
 
-  const ReadyRoomPage({super.key, required this.roomName,required this.roomCode,required this.onLeave});
+  const ReadyRoomPage({super.key, required this.roomName,required this.roomCode, required this.gameRoomCode, required this.onLeave});
 
   @override
   _ReadyRoomPageState createState() => _ReadyRoomPageState();
@@ -43,12 +44,14 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
         // JSON 데이터만 추가
         if (messageData is Map<String, dynamic>) {
           _messages.add(messageData);
-          print('_messages: $_messages'); // 추가된 메시지 확인
+          print('New message added: $messageData'); // 추가된 메시지 확인
         } else {
           print('Invalid message format: $messageData');
         }
       });
-    });
+    },  widget.roomCode,
+      "readyroom", // Room 타입 지정 , ReadyRoom의 RoomCode 사용
+    );
   }
 
   void _showUsernameDialog() {
@@ -166,7 +169,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
       // final username = "User1"; // 사용자 이름 수동 설정 방법
       final content = _messageController.text;
 
-      _webSocketService.sendMessage(username, content); // 메시지 전송
+      _webSocketService.sendMessage("readyroom", widget.roomCode, username, content); // 메시지 전송
       _messageController.clear();
     }
   }
@@ -176,7 +179,7 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
     double screenWidth = MediaQuery.of(context).size.width; //화면의 크기를 변수로 가져오자
     return PopScope(
       canPop: true, // 뒤로 가기 허용
-      onPopInvokedWithResult: (didPop, result) {
+      onPopInvoked: (didPop) {
         if (didPop) {
           widget.onLeave(); // 뒤로 갈 때 인원 감소 실행
         }
@@ -223,14 +226,14 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                     // 게임 시작 버튼
                     ElevatedButton(
                       onPressed: () {
-                        _webSocketService.sendParticipants(widget.roomCode, _participants);
+                        _webSocketService.sendParticipants("readyroom",widget.roomCode, _participants);
                         // 게임 시작 로직 추가
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => GameRoomPage(
                                 roomName: '${widget.roomName}',
-                                roomCode: '${widget.roomCode}',
+                                roomCode: '${widget.gameRoomCode}', // GameRoom에서는 별도의 RoomCode 사용
                                 userName: '${username}',
                                 participants: _participants,
                                 ),
@@ -315,16 +318,14 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
               reverse: true, // 최신 메시지가 아래에 표시되도록
               itemBuilder: (context, index) {
                 // 메시지를 Map<String, dynamic> 타입으로 캐스팅
-                final Map<String, dynamic> message = _messages[_messages
-                    .length - 1 - index];
+                final Map<String, dynamic> message = _messages[_messages.length - 1 - index];
 
                 return Align(
                   alignment: message['username'] == username
                       ? Alignment.centerRight // 본인의 메시지는 오른쪽
                       : Alignment.centerLeft, // 다른 사용자의 메시지는 왼쪽
                   child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 5, horizontal: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: message['username'] == username
@@ -333,10 +334,8 @@ class _ReadyRoomPageState extends State<ReadyRoomPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      "${message['username'] ??
-                          'Unknown'}: ${message['content'] ?? 'No content'}",
-                      style: const TextStyle(color: Colors
-                          .white), // 텍스트 색상은 흰색
+                      "${message['username'] ?? 'Unknown'}: ${message['content'] ?? 'No content'}",
+                      style: const TextStyle(color: Colors.white), // 텍스트 색상은 흰색
                     ),
                   ),
                 );
