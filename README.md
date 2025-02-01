@@ -33,6 +33,16 @@ Thank you, and enjoy!
 
 ##  실행 방법 | Execution method
 
+### **안드로이드 스튜디오(Android Studio)**를 사용해 환경을 설정합니다.
+1. Android SDK 31 또는 34 필요
+2. 플러터(Flutter) 3.19.2 버전 설치 (설치 시 Dart 3.3.0은 자동으로 맞춤 업데이트됩니다.)
+3. 설정 완료 후 Flutter 실행 및 APK 다운로드를 진행합니다.
+4. 밑의 아이콘과 같은, FuhrerGame 어플리케이션을 실행하세요!.
+  
+  ![ic_launcher](https://github.com/user-attachments/assets/b7881d2f-b025-43f2-8066-05d0c3928491)
+
+
+
 ## 환경 설정 | Configuration Settings
 
 
